@@ -1,0 +1,39 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.a
+*.out
+
+# Go build artifacts
+/bin/
+/pkg/
+/build/
+*.o
+*.test
+
+# Dependency directories (if using vendoring)
+vendor/
+
+# Go module cache
+/go/pkg/
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+*.swn
+
+# IDE/editor settings
+.idea/
+.vscode/
+*.iml
+
+# MacOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
