@@ -58,21 +58,21 @@ func main() {
 
 	// Define API routes
 	// TODO: api groups?
-	e.GET("/v1/signals", http.ListSignalHandler(s))
-	e.GET("/v1/signals/:id", http.GetSignalHandler(s))
-	e.POST("/v1/signals", http.CreateSignalHandler(s))
-	e.PUT(("/v1/signals/:id"), http.UpdateSignalHandler(s))
-	e.DELETE(("/v1/signals/:id"), http.DeleteSignalHandler(s))
+	e.GET("/api/v1/signals", http.ListSignalHandler(s))
+	e.GET("/api/v1/signals/:id", http.GetSignalHandler(s))
+	e.POST("/api/v1/signals", http.CreateSignalHandler(s))
+	e.PUT(("/api/v1/signals/:id"), http.UpdateSignalHandler(s))
+	e.DELETE(("/api/v1/signals/:id"), http.DeleteSignalHandler(s))
 
-	e.GET("/v1/tracks", http.ListTrackHandler(s))
-	e.GET("/v1/tracks/:id", http.GetTrackHandler(s))
-	e.POST("/v1/tracks", http.CreateTrackHandler(s))
-	e.PUT("/v1/tracks/:id", http.UpdateTrackHandler(s))
-	e.DELETE("/v1/tracks/:id", http.DeleteTrackHandler(s))
+	e.GET("/api/v1/tracks", http.ListTrackHandler(s))
+	e.GET("/api/v1/tracks/:id", http.GetTrackHandler(s))
+	e.POST("/api/v1/tracks", http.CreateTrackHandler(s))
+	e.PUT("/api/v1/tracks/:id", http.UpdateTrackHandler(s))
+	e.DELETE("/api/v1/tracks/:id", http.DeleteTrackHandler(s))
 
-	e.GET("/v1/signals/:id/tracks", http.GetSignalTracks(s))
+	e.GET("/api/v1/signals/:id/tracks", http.GetSignalTracks(s))
 
-	e.POST("/v1/tracks/load", http.LoadJSON(s))
+	e.POST("/api/v1/tracks/load", http.LoadJSON(s))
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

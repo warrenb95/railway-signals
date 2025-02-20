@@ -9,6 +9,27 @@ This API is designed to handle the creation and retrieval of entities related to
 > [!NOTE]
 > I tried to learn the echo framework and go-pg orm while writing this so my usage might be a little niave.
 
+## Requirements
+
+- docker-compose/docker
+- go version 1.23.5
+
+## Running the server
+
+2 terminals will be needed, the first to run the docker-compose file.
+
+```sh
+docker-compose up
+```
+
+The second to run the server.
+
+```sh
+go run ./cmd/server/main.go
+```
+
+Use should then be able to hit it with curl requests.
+
 ---
 
 ## **Entities**
@@ -110,12 +131,67 @@ type TrackSignals struct {
 
 ---
 
-## Service designed
+## **Data Handling**
+
+- **Create Operation**
+  - If signals are nested during Track creation, missing signals will be **auto-created** with a default `NULL` mileage.
+  - If a signal already exists during creation, it will **use the existing record** rather than creating a duplicate.
+  
+- **Get Operation**
+  - For **Get by ID** endpoints, the API will return the requested entity and **include nested data** (e.g., signals for Track by ID).
+  - **Get All** endpoints will return results in the database’s **natural order** without pagination.
+
+---
+
+## **Error Handling**
+
+- **Response Format**:
+  - Errors will be returned in the format:
+
+    ```json
+    {
+      "error": "Invalid input",
+      "code": 1001
+    }
+    ```
+
+- **Error Codes**:
+  - **400**: Bad Request (e.g., missing required fields).
+  - **404**: Not Found (e.g., entity with given ID does not exist).
+  - **409**: Conflict (e.g., duplicate entity detected).
+  
+- **Validation Errors**: For required fields and incorrect data formats, the API will return a **simple error message**.
+
+---
+
+## **Testing Strategy**
+
+- **Unit Tests**:
+  - Use **`testify` for assertions**.
+  - **Test cases will be created using a map** for organization.
+  
+- **Integration Tests**:
+  - Tests will run against a **real PostgreSQL database** managed by **`dockertest`**.
+  - **Tests will create their own data as needed** and clean up automatically after each test.
+  
+- **Test Execution**:
+  - Tests will be run **sequentially** to avoid conflicts in the test database.
+  - Tests will **automatically clean up** data after execution using transaction rollbacks or table truncation.
+
+---
+
+## **Architecture and Framework Choices**
 
 I tried to use a hexagonal architecture along with DDD. Separating the business logic from the adapters as much as possible
 
 - <https://www.geeksforgeeks.org/hexagonal-architecture-system-design/>
 - <https://www.geeksforgeeks.org/domain-driven-design-ddd/?ref=header_outind>
+
+- **Framework**: Golang's **Echo framework** will be used for routing and middleware.
+- **Database**: PostgreSQL will be used.
+- **Dependency Injection**: **Dependency injection** will be used for better testability and modularity.
+- **Logging**: **Structured logging** in JSON format will be enabled.
+- **Database Migrations**: **`golang-migrate`** will manage schema migrations.
 
 ---
 
