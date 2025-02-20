@@ -57,7 +57,7 @@ func GetSignalTracks(s *application.Service) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid signal ID"})
 		}
 
-		tracks, err := s.GetSignalTracks(c.Request().Context(), signalID)
+		tracks, _, err := s.GetSignalTracks(c.Request().Context(), signalID, 100, 0)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to list signal tracks"})
 		}

@@ -27,5 +27,7 @@ type TrackSignals struct {
 		Name    *string  `json:"signal_name"`
 		ELR     string   `json:"elr"`
 		Mileage *float64 `json:"mileage"`
-	}
+	} `json:"signal_ids"`
 }
+
+type TrackSignalSlice []TrackSignals

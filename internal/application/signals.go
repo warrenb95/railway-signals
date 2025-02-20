@@ -15,6 +15,7 @@ func (s *Service) GetSignal(ctx context.Context, signalID int) (*domain.Signal, 
 }
 
 func (s *Service) ListSignals(ctx context.Context, limit, page int) (signals []domain.Signal, nextPage int, err error) {
+	// TODO: validate limit and page
 	signals, count, err := s.SignalStore.ListSignals(ctx, limit, page)
 	if err != nil {
 		return nil, 0, err

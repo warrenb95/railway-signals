@@ -10,7 +10,7 @@ import (
 )
 
 // CreateSignal inserts a new signal into the database.
-func (r *PostgresRepo) CreateSignal(ctx context.Context, signal *domain.Signal) error {
+func (r *PostgresRepository) CreateSignal(ctx context.Context, signal *domain.Signal) error {
 	return r.db.RunInTransaction(ctx, func(tx *pg.Tx) error {
 		_, err := r.db.Model(signal).Table("signals").OnConflict("DO NOTHING").Insert()
 		if err != nil {
@@ -23,7 +23,7 @@ func (r *PostgresRepo) CreateSignal(ctx context.Context, signal *domain.Signal) 
 }
 
 // GetSignal retrieves a signal by its ID.
-func (r *PostgresRepo) GetSignal(ctx context.Context, signalID int) (*domain.Signal, error) {
+func (r *PostgresRepository) GetSignal(ctx context.Context, signalID int) (*domain.Signal, error) {
 	signal := &domain.Signal{ID: signalID}
 	err := r.db.Model(signal).Table("signals").WherePK().Select()
 	if err != nil {
@@ -36,12 +36,12 @@ func (r *PostgresRepo) GetSignal(ctx context.Context, signalID int) (*domain.Sig
 
 // ListSignals retrieves all signals from the database.
 // Handles paginated requests and returns the total count along with the returned signals.
-func (r *PostgresRepo) ListSignals(ctx context.Context, limit, page int) ([]domain.Signal, int, error) {
+func (r *PostgresRepository) ListSignals(ctx context.Context, limit, page int) ([]domain.Signal, int, error) {
 	var signals []domain.Signal
 
 	err := r.db.Model(&signals).
 		Limit(limit).
-		Offset(page * limit). // TODO: validate limit and page
+		Offset(page * limit).
 		Table("signals").
 		Select()
 	if err != nil {
@@ -59,7 +59,7 @@ func (r *PostgresRepo) ListSignals(ctx context.Context, limit, page int) ([]doma
 }
 
 // UpdateSignal modifies an existing signal.
-func (r *PostgresRepo) UpdateSignal(ctx context.Context, updateReq *domain.Signal) error {
+func (r *PostgresRepository) UpdateSignal(ctx context.Context, updateReq *domain.Signal) error {
 	return r.db.RunInTransaction(ctx, func(tx *pg.Tx) error {
 		_, err := r.db.Model(updateReq).Table("signals").WherePK().Update()
 		if err != nil {
@@ -72,7 +72,7 @@ func (r *PostgresRepo) UpdateSignal(ctx context.Context, updateReq *domain.Signa
 }
 
 // DeleteSignal removes a signal from the database.
-func (r *PostgresRepo) DeleteSignal(ctx context.Context, signalID int) error {
+func (r *PostgresRepository) DeleteSignal(ctx context.Context, signalID int) error {
 	signal := &domain.Signal{ID: signalID}
 
 	return r.db.RunInTransaction(ctx, func(tx *pg.Tx) error {

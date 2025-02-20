@@ -11,19 +11,19 @@ import (
 	_ "github.com/lib/pq" // Required for PostgreSQL
 )
 
-// PostgresRepo struct for database interactions
-type PostgresRepo struct {
+// PostgresRepository struct for database interactions
+type PostgresRepository struct {
 	db     *pg.DB
 	logger *logrus.Logger
 }
 
-// NewRepository initializes a new repository
-func NewRepository(db *pg.DB, logger *logrus.Logger) (*PostgresRepo, error) {
-	p := &PostgresRepo{db: db, logger: logger}
+// NewPostgresRepository initializes a new repository
+func NewPostgresRepository(db *pg.DB, logger *logrus.Logger) (*PostgresRepository, error) {
+	p := &PostgresRepository{db: db, logger: logger}
 	return p, p.runMigrations()
 }
 
-func (r *PostgresRepo) runMigrations() error {
+func (r *PostgresRepository) runMigrations() error {
 	// run migrations
 	collection := migrations.NewCollection()
 	err := collection.DiscoverSQLMigrations("migrations")

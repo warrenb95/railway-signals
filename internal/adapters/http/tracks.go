@@ -65,14 +65,9 @@ func ListTrackHandler(s *application.Service) echo.HandlerFunc {
 			limit = l
 		}
 
-		tracks, count, err := s.ListTracks(c.Request().Context(), limit, page)
+		tracks, nextPage, err := s.ListTracks(c.Request().Context(), limit, page)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to list tracks"})
-		}
-
-		var nextPage int
-		if page*limit < count {
-			nextPage = page + 1
 		}
 
 		return c.JSON(http.StatusOK, map[string]any{

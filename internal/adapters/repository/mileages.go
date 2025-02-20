@@ -9,7 +9,7 @@ import (
 )
 
 // AddMileage addes a mileage value linking a signal with a track.
-func (r *PostgresRepo) AddMileage(ctx context.Context, mileage *domain.Mileage) error {
+func (r *PostgresRepository) AddMileage(ctx context.Context, mileage *domain.Mileage) error {
 	return r.db.RunInTransaction(ctx, func(tx *pg.Tx) error {
 		_, err := r.db.Model(mileage).Table("mileages").Insert()
 		if err != nil {

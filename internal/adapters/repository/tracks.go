@@ -10,7 +10,7 @@ import (
 )
 
 // CreateTrack inserts a new track into the database.
-func (r *PostgresRepo) CreateTrack(ctx context.Context, track *domain.Track) error {
+func (r *PostgresRepository) CreateTrack(ctx context.Context, track *domain.Track) error {
 	return r.db.RunInTransaction(ctx, func(tx *pg.Tx) error {
 		_, err := tx.ModelContext(ctx, track).Table("tracks").Insert(track)
 		if err != nil {
@@ -22,7 +22,7 @@ func (r *PostgresRepo) CreateTrack(ctx context.Context, track *domain.Track) err
 }
 
 // GetTrack retrieves a track by its ID.
-func (r *PostgresRepo) GetTrack(ctx context.Context, trackID int) (*domain.Track, error) {
+func (r *PostgresRepository) GetTrack(ctx context.Context, trackID int) (*domain.Track, error) {
 	track := &domain.Track{ID: trackID}
 
 	err := r.db.ModelContext(ctx, track).Table("tracks").WherePK().Select()
@@ -36,11 +36,11 @@ func (r *PostgresRepo) GetTrack(ctx context.Context, trackID int) (*domain.Track
 
 // ListTracks retrieves all tracks from the database.
 // Handles paginated requests and returns the total count along with the returned tracks.
-func (r *PostgresRepo) ListTracks(ctx context.Context, limit, page int) ([]domain.Track, int, error) {
+func (r *PostgresRepository) ListTracks(ctx context.Context, limit, page int) ([]domain.Track, int, error) {
 	var tracks []domain.Track
 	err := r.db.ModelContext(ctx, &tracks).
 		Limit(limit).
-		Offset(page * limit). // TODO: validate limit and page
+		Offset(page * limit).
 		Table("tracks").
 		Select()
 	if err != nil {
@@ -58,7 +58,7 @@ func (r *PostgresRepo) ListTracks(ctx context.Context, limit, page int) ([]domai
 }
 
 // UpdateTrack modifies an existing track.
-func (r *PostgresRepo) UpdateTrack(ctx context.Context, track *domain.Track) error {
+func (r *PostgresRepository) UpdateTrack(ctx context.Context, track *domain.Track) error {
 	return r.db.RunInTransaction(ctx, func(tx *pg.Tx) error {
 		_, err := tx.ModelContext(ctx, track).Table("tracks").WherePK().Update()
 		if err != nil {
@@ -71,7 +71,7 @@ func (r *PostgresRepo) UpdateTrack(ctx context.Context, track *domain.Track) err
 }
 
 // DeleteTrack removes a track from the database.
-func (r *PostgresRepo) DeleteTrack(ctx context.Context, trackID int) error {
+func (r *PostgresRepository) DeleteTrack(ctx context.Context, trackID int) error {
 	track := &domain.Track{ID: trackID}
 	_, err := r.db.ModelContext(ctx, track).Table("tracks").WherePK().Delete()
 	if err != nil && !errors.Is(err, pg.ErrNoRows) {
@@ -84,11 +84,11 @@ func (r *PostgresRepo) DeleteTrack(ctx context.Context, trackID int) error {
 
 // ListSignalTracks retrieves all tracks from the database associated with the given signal.
 // Handles paginated requests and returns the total count along with the returned tracks.
-func (r *PostgresRepo) ListSignalTracks(ctx context.Context, signalID, limit, page int) ([]domain.Track, int, error) {
+func (r *PostgresRepository) ListSignalTracks(ctx context.Context, signalID, limit, page int) ([]domain.Track, int, error) {
 	var tracks []domain.Track
 	err := r.db.ModelContext(ctx, &tracks).
 		Limit(limit).
-		Offset(page * limit). // TODO: validate limit and page
+		Offset(page * limit).
 		Table("tracks").
 		Select()
 	if err != nil {
