@@ -81,8 +81,9 @@ func (r *PostgresRepository) ListSignalTracks(ctx context.Context, signalID, lim
 	var tracks []domain.Track
 	err := r.db.ModelContext(ctx, &tracks).
 		Limit(limit).
-		Offset(page * limit).
-		Table("tracks").
+		Offset(page*limit).
+		Join("mileage ON tracks.id=mileage.track_id").
+		Where("mileage.signal_id = ?", signalID).
 		Select()
 	if err != nil {
 		r.logger.WithContext(ctx).WithError(err).Error("listing tracks from store")

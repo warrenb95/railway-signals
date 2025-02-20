@@ -1,7 +1,11 @@
+DROP TABLE mileage;
+DROP TABLE signals;
+DROP TABLE tracks;
+
 CREATE TABLE signals (
     id INTEGER PRIMARY KEY,
     name VARCHAR(255),
-    elr VARCHAR(4) NOT NULL
+    elr VARCHAR(4)
 );
 
 CREATE TABLE tracks (

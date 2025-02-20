@@ -12,8 +12,8 @@ This API is designed to handle the creation and retrieval of entities related to
 
 ```go
 type Signal struct {
-    ID   int     `json:"signal_id"`
-    Name *string `json:"signal_name"`
+    ID   int     `json:"id"`
+    Name string `json:"signal_name"`
     ELR  string  `json:"elr"`
 }
 ```
@@ -40,7 +40,7 @@ type Mileage struct {
 
 ```go
 type Track struct {
-    ID     int    `json:"track_id"`
+    ID     int    `json:"id"`
     Source string `json:"source"`
     Target string `json:"target"`
 }
@@ -59,9 +59,9 @@ type TrackSignals struct {
     Target  string `json:"target"`
     Signals []struct {
         ID      int      `json:"signal_id"`
-        Name    *string  `json:"signal_name"`
+        Name    string  `json:"signal_name"`
         ELR     string   `json:"elr"`
-        Mileage *float64 `json:"mileage"`
+        Mileage float64 `json:"mileage"`
     }
 }
 ```

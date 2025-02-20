@@ -23,6 +23,10 @@ func (a *Service) LoadTrackSignals(ctx context.Context, trackSignals []domain.Tr
 		}
 
 		for _, signal := range ts.Signals {
+			// TODO: this needs to be removed when DB migration issues are fixed.
+			if signal.ELR == "" {
+				signal.ELR = "NULL"
+			}
 			err := a.SignalStore.CreateSignal(ctx, &domain.Signal{
 				ID:   signal.ID,
 				Name: signal.Name,
