@@ -23,8 +23,6 @@ func LoadJSON(s *application.Service) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request payload: " + err.Error()})
 		}
 
-		s.Logger.WithField("input", input).Info("Loading JSON")
-
 		if err := s.LoadTrackSignals(c.Request().Context(), input); err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		}

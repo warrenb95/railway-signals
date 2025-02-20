@@ -38,6 +38,12 @@ func (r *PostgresRepository) runMigrations() error {
 		return fmt.Errorf("starting PostgreSQL migrations: %w", err)
 	}
 
+	_, _, err = collection.Run(r.db, "reset")
+	if err != nil {
+		r.logger.WithError(err).Error("Reseting PostgreSQL migrations")
+		return fmt.Errorf("reseting PostgreSQL migrations: %w", err)
+	}
+
 	oldVersion, newVersion, err := collection.Run(r.db, "up")
 	if err != nil {
 		r.logger.WithError(err).Error("Running PostgreSQL migrations")

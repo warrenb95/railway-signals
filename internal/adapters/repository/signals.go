@@ -12,7 +12,7 @@ import (
 // CreateSignal inserts a new signal into the database.
 func (r *PostgresRepository) CreateSignal(ctx context.Context, signal *domain.Signal) error {
 	return r.db.RunInTransaction(ctx, func(tx *pg.Tx) error {
-		_, err := r.db.Model(signal).Table("signals").OnConflict("DO NOTHING").Insert()
+		_, err := r.db.Model(signal).OnConflict("DO NOTHING").Insert()
 		if err != nil {
 			r.logger.WithContext(ctx).WithError(err).Error("inserting signal into store")
 			return fmt.Errorf("inserting signal: %w", err)
@@ -25,7 +25,7 @@ func (r *PostgresRepository) CreateSignal(ctx context.Context, signal *domain.Si
 // GetSignal retrieves a signal by its ID.
 func (r *PostgresRepository) GetSignal(ctx context.Context, signalID int) (*domain.Signal, error) {
 	signal := &domain.Signal{ID: signalID}
-	err := r.db.Model(signal).Table("signals").WherePK().Select()
+	err := r.db.Model(signal).WherePK().Select()
 	if err != nil {
 		r.logger.WithContext(ctx).WithError(err).Error("getting signal from store")
 		return nil, fmt.Errorf("getting signal: %w", err)
@@ -39,20 +39,13 @@ func (r *PostgresRepository) GetSignal(ctx context.Context, signalID int) (*doma
 func (r *PostgresRepository) ListSignals(ctx context.Context, limit, page int) ([]domain.Signal, int, error) {
 	var signals []domain.Signal
 
-	err := r.db.Model(&signals).
+	count, err := r.db.Model(&signals).
 		Limit(limit).
 		Offset(page * limit).
-		Table("signals").
-		Select()
+		SelectAndCount()
 	if err != nil {
 		r.logger.WithContext(ctx).WithError(err).Error("listing signals from store")
 		return nil, 0, fmt.Errorf("listing signals: %w", err)
-	}
-
-	count, err := r.db.Model((*domain.Signal)(nil)).Count()
-	if err != nil {
-		r.logger.WithContext(ctx).WithError(err).Error("counting signals from store")
-		return nil, 0, fmt.Errorf("counting signals: %w", err)
 	}
 
 	return signals, count, nil
@@ -61,7 +54,7 @@ func (r *PostgresRepository) ListSignals(ctx context.Context, limit, page int) (
 // UpdateSignal modifies an existing signal.
 func (r *PostgresRepository) UpdateSignal(ctx context.Context, updateReq *domain.Signal) error {
 	return r.db.RunInTransaction(ctx, func(tx *pg.Tx) error {
-		_, err := r.db.Model(updateReq).Table("signals").WherePK().Update()
+		_, err := r.db.Model(updateReq).WherePK().Update()
 		if err != nil {
 			r.logger.WithContext(ctx).WithError(err).Error("updating signal")
 			return fmt.Errorf("updating signal: %w", err)
@@ -76,7 +69,7 @@ func (r *PostgresRepository) DeleteSignal(ctx context.Context, signalID int) err
 	signal := &domain.Signal{ID: signalID}
 
 	return r.db.RunInTransaction(ctx, func(tx *pg.Tx) error {
-		_, err := r.db.Model(signal).Table("signals").WherePK().Delete()
+		_, err := r.db.Model(signal).WherePK().Delete()
 		if err != nil && !errors.Is(err, pg.ErrNoRows) {
 			r.logger.WithContext(ctx).WithError(err).Error("deleting signal")
 			return fmt.Errorf("deleting signal: %w", err)

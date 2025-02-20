@@ -9,34 +9,34 @@ import (
 	"github.com/warrenb95/railway-signals/internal/domain"
 )
 
-func TestCreateTrack(t *testing.T) {
+func TestCreateSignals(t *testing.T) {
 	tests := map[string]struct {
-		req *domain.Track
+		req *domain.Signal
 
 		errorContains string
 	}{
-		"successfully create track in the store": {
-			req: &domain.Track{
-				ID:     1,
-				Source: "source",
-				Target: "target",
+		"successfully create signal in the store": {
+			req: &domain.Signal{
+				ID:   1,
+				Name: "signal",
+				ELR:  "asdf",
 			},
 		},
 	}
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			err := testDB.CreateTrack(context.Background(), test.req)
+			err := testDB.CreateSignal(context.Background(), test.req)
 			if test.errorContains != "" {
 				require.ErrorContains(t, err, test.errorContains, "create error contains")
 				return
 			}
-			require.NoError(t, err, "creating new track")
+			require.NoError(t, err, "creating new signal")
 
-			track, err := testDB.GetTrack(context.Background(), test.req.ID)
-			require.NoError(t, err, "getting track")
+			track, err := testDB.GetSignal(context.Background(), test.req.ID)
+			require.NoError(t, err, "getting signal")
 
-			assert.Equal(t, test.req, track, "track")
+			assert.Equal(t, test.req, track, "signal")
 		})
 	}
 }
